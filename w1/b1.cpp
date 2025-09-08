@@ -1,24 +1,61 @@
-using namespace std;
 #include <iostream>
+#include <cmath>
+using namespace std;
 
-int findMax(int num1, int num2, int num3) {
-    int max = 0;
-    if ((num1 > num2) && (num1 > num3))
-        max = num1;
-    if ((num2 > num1) && (num2 > num3))
-        max = num2;
-    if ((num3 > num1) && (num3 > num2))
-        max = num3;
-    return max;
+int solveQuartic(double a, double b, double c, double x[]) {
+    if (a == 0 && b == 0 && c == 0) {
+        return -1; // vô số nghiệm
+    }
+
+    if (a == 0 && b == 0) {
+        return 0; // vô nghiệm
+    }
+
+    if (a == 0) { // phương trình bậc nhất theo y = bx + c
+        double y = -c / b;
+        if (y < 0) return 0;
+        x[0] = sqrt(y);
+        x[1] = -sqrt(y);
+        return 2;
+    }
+
+    double delta = b * b - 4 * a * c;
+    if (delta < 0) return 0;
+
+    double y1 = (-b + sqrt(delta)) / (2 * a);
+    double y2 = (-b - sqrt(delta)) / (2 * a);
+
+    int count = 0;
+    if (y1 >= 0) {
+        x[count++] = sqrt(y1);
+        x[count++] = -sqrt(y1);
+    }
+    if (y2 >= 0 && y2 != y1) {
+        x[count++] = sqrt(y2);
+        x[count++] = -sqrt(y2);
+    }
+
+    return count;
 }
 
 int main() {
-    int a, b, c;
-    cout << "Nhap 3 so nguyen: ";
+    double a, b, c;
     cin >> a >> b >> c;
 
-    int result = findMax(a, b, c);
-    cout << "So lon nhat la: " << result << endl;
+    double x[4];
+    int n = solveQuartic(a, b, c, x);
+
+    if (n == -1) {
+        cout << "Infinite solutions." << endl;
+    } else if (n == 0) {
+        cout << "No solution." << endl;
+    } else {
+        cout << "The equation has " << n << " real solution(s): ";
+        for (int i = 0; i < n; i++) {
+            cout << x[i] << " ";
+        }
+        cout << endl;
+    }
 
     return 0;
 }
